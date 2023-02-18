@@ -1,0 +1,24 @@
+{
+  "plugins": ["jest", "@typescript-eslint", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 9,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "prefer-const": "error",
+    "eqeqeq": ["error", "smart"]
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "jest/globals": true
+  }
+}
