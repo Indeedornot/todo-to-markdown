@@ -10,7 +10,7 @@ describe('Mock Test', () => {
     if (!readme) throw new Error('No readme found');
 
     const segment = getSegment(readme.content);
-    if (!segment) throw new Error('No segment found');
+    if (segment === null) throw new Error('No segment found');
 
     const todo = await getTodo();
     if (!todo) throw new Error('No todo found');

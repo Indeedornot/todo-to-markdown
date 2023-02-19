@@ -10,13 +10,13 @@ const run = async (): Promise<void> => {
     const repoContext = github.context.repo;
 
     const readme = await getReadme(octoKit, repoContext);
-    if (!readme) throw new Error('No readme found');
+    if (readme == null) throw new Error('No readme found');
 
     const segment = getSegment(readme.content);
-    if (!segment) throw new Error('No segment found');
+    if (segment == null) throw new Error('No segment found');
 
     const todo = await getTodo(octoKit, repoContext);
-    if (!todo) throw new Error('No todo found');
+    if (todo == null) throw new Error('No todo found');
 
     const newSegment = createSegment(todo.content);
     if (newSegment === segment) return; //no changes
