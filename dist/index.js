@@ -20,9 +20,6 @@ exports.updateReadme = exports.getReadme = exports.getTodo = void 0;
 const getTodo = (octoKit, repoContext) => __awaiter(void 0, void 0, void 0, function* () {
     const { owner, repo } = repoContext;
     const todo = yield octoKit.rest.repos.getContent({
-        mediaType: {
-            format: 'raw',
-        },
         owner,
         repo,
         path: 'TODO',
@@ -32,22 +29,20 @@ const getTodo = (octoKit, repoContext) => __awaiter(void 0, void 0, void 0, func
         return null; //failed to get file
     if (Array.isArray(todo.data))
         return null; //is directory
-    if (!('content' in todo.data) || todo.data.type !== 'file')
+    if (todo.data.type !== 'file')
         return null; //is not a file
+    if (!('content' in todo.data) || typeof todo.data.content !== 'string')
+        return null; //no content
     return Object.assign(Object.assign({}, todo.data), { content: Buffer.from(todo.data.content, 'base64').toString() });
 });
 exports.getTodo = getTodo;
 const getReadme = (octoKit, repoContext) => __awaiter(void 0, void 0, void 0, function* () {
     const { owner, repo } = repoContext;
     const readme = yield octoKit.rest.repos.getReadme({
-        mediaType: {
-            format: 'raw',
-        },
         owner,
         repo,
-        path: 'README.md',
     });
-    if (readme.status !== 200)
+    if (readme.status !== 200 || typeof readme.data.content !== 'string')
         return null; //failed to get file
     return Object.assign(Object.assign({}, readme.data), { content: Buffer.from(readme.data.content, 'base64').toString() });
 });
@@ -112,23 +107,33 @@ const io_1 = __nccwpck_require__(1915);
 const segments_1 = __nccwpck_require__(6007);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const githubToken = core.getInput('GH_TOKEN', { required: true });
+        const githubToken = core.getInput('GH_TOKEN');
+        if (!githubToken)
+            throw new Error('No github token found');
+        core.debug('Github token found');
         const octoKit = github.getOctokit(githubToken);
         const repoContext = github.context.repo;
+        core.debug('Github context found');
         const readme = yield (0, io_1.getReadme)(octoKit, repoContext);
         if (readme == null)
             throw new Error('No readme found');
+        core.debug('Readme found');
         const segment = (0, segments_1.getSegment)(readme.content);
         if (segment == null)
             throw new Error('No segment found');
+        core.debug('Segment found in readme');
         const todo = yield (0, io_1.getTodo)(octoKit, repoContext);
         if (todo == null)
             throw new Error('No todo found');
+        core.debug('Todo found');
         const newSegment = (0, segments_1.createSegment)(todo.content);
-        if (newSegment === segment)
-            return; //no changes
+        if (newSegment === segment) {
+            core.debug('No changes to readme');
+            return;
+        }
         const newReadme = (0, segments_1.updateSegment)(readme.content, newSegment);
         yield (0, io_1.updateReadme)(octoKit, repoContext, readme.path, newReadme, readme.sha);
+        core.debug('Readme updated');
     }
     catch (error) {
         if (error instanceof Error)
