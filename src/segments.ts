@@ -27,7 +27,7 @@ const taskToMarkdown = (line: string) => {
 };
 
 const formatHeader = (header: string) => {
-	return `\r\n### ${header}\r\n`;
+	return `\n### ${header}\n`;
 };
 
 export const createSegment = (todo: string) => {
@@ -41,11 +41,11 @@ export const createSegment = (todo: string) => {
 		return taskToMarkdown(line);
 	});
 
-	return formattedLines.join('\r\n').trim();
+	return formattedLines.join('\n').trim();
 };
 
 const wrapSegment = (content: string) => {
-	return `${segment.start}\r\n\r\n${content}\r\n\r\n${segment.end}`;
+	return `${segment.start}\\n\n${content}\n\n${segment.end}`;
 };
 
 export const updateSegment = (readme: string, segment: string) => {
