@@ -107,7 +107,7 @@ const io_1 = __nccwpck_require__(1915);
 const segments_1 = __nccwpck_require__(6007);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const githubToken = core.getInput('GH_TOKEN');
+        const githubToken = core.getInput('GH_TOKEN', { required: true });
         if (!githubToken)
             throw new Error('No github token found');
         core.debug('Github token found');
@@ -164,13 +164,36 @@ const getSegment = (readme) => {
     return matches[1].trim();
 };
 exports.getSegment = getSegment;
+const taskStatus = {
+    notDone: '☐',
+    done: '✔',
+};
+const isTask = (line) => {
+    return line[0] === taskStatus.notDone || line[0] === taskStatus.done;
+};
+const taskToMarkdown = (line) => {
+    const status = line[0];
+    const done = status === taskStatus.done;
+    const task = line.slice(2).trim();
+    return `- [${done ? 'x' : ' '}] ${task}`;
+};
+const formatHeader = (header) => {
+    return `\r\n### ${header}\r\n`;
+};
 const createSegment = (todo) => {
-    //will perform additional formatting here
-    return `${todo}`;
+    //split on new lines and remove empty lines
+    const lines = todo.trim().split(/\s*[\r?\n]+\s*/g);
+    const formattedLines = lines.map((line) => {
+        if (!isTask(line)) {
+            return formatHeader(line);
+        }
+        return taskToMarkdown(line);
+    });
+    return formattedLines.join('\r\n').trim();
 };
 exports.createSegment = createSegment;
 const wrapSegment = (content) => {
-    return `${segment.start}\r\n${content}\r\n${segment.end}`;
+    return `${segment.start}\r\n\r\n${content}\r\n\r\n${segment.end}`;
 };
 const updateSegment = (readme, segment) => {
     return readme.replace(segmentRegex, wrapSegment(segment));
