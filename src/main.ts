@@ -1,19 +1,31 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import * as core from '@actions/core';
+import github from '@actions/github';
+import {getReadme, getTodo, updateReadme} from './io';
+import {createSegment, getSegment, updateSegment} from './segments';
 
-async function run(): Promise<void> {
+const run = async (): Promise<void> => {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const githubToken = core.getInput('GH_TOKEN', {required: true});
+    const octoKit = github.getOctokit(githubToken);
+    const repoContext = github.context.repo;
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const readme = await getReadme(octoKit, repoContext);
+    if (!readme) throw new Error('No readme found');
 
-    core.setOutput('time', new Date().toTimeString())
+    const segment = getSegment(readme.content);
+    if (!segment) throw new Error('No segment found');
+
+    const todo = await getTodo(octoKit, repoContext);
+    if (!todo) throw new Error('No todo found');
+
+    const newSegment = createSegment(todo.content);
+    if (newSegment === segment) return; //no changes
+
+    const newReadme = updateSegment(readme.content, newSegment);
+    await updateReadme(octoKit, repoContext, readme.path, newReadme, readme.sha);
   } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
+    if (error instanceof Error) core.setFailed(error.message);
   }
-}
+};
 
-run()
+run();
