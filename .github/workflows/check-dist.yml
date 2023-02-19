@@ -8,7 +8,7 @@ name: Check dist/
 #https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#example-using-a-public-action
 on:
   push:
-s    paths:
+    paths:
       - 'TODO'
   pull_request:
     paths:
