@@ -58,8 +58,8 @@ describe('Tests with mock functions', () => {
 		const newSegment = createSegment(todo.content);
 		await updateFileContents(paths.new, newSegment);
 
-		const expectedSegment = getFileContents(paths.expected);
-		const areEqual = (await expectedSegment).content === newSegment;
+		const expectedSegment = await getFileContents(paths.expected);
+		const areEqual = expectedSegment.content === newSegment;
 		expect(areEqual).toBe(true);
 	});
 });
