@@ -1,17 +1,3 @@
-## Roadmap
-
-<!-- start: readme-segment -->
-
-### Major:
-
-- [ ] Make run on push of TODO
-
-### Minor:
-
-- [ ] Add better formatting
-
-<!-- end: readme-segment -->
-
 ## Code in Main
 
 > First, you'll need to have a reasonably modern version of `node` handy. This won't work with versions older than 9, for instance.

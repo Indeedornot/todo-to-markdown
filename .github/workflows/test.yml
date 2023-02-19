@@ -22,3 +22,4 @@ jobs:
       - uses: ./
         with:
           GH_TOKEN: ${{ secrets.TEST_ACCESS_TOKEN }}
+          BRANCH: test

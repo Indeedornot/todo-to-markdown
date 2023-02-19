@@ -1,12 +1,12 @@
 import {OctoClient, RepoContext} from '.';
 
 export const getTodo = async (octoKit: OctoClient, repoContext: RepoContext) => {
-	const {owner, repo} = repoContext;
-
+	const {owner, repo, branch} = repoContext;
 	const todo = await octoKit.rest.repos.getContent({
 		owner,
 		repo,
 		path: 'TODO',
+		ref: branch,
 	});
 
 	// If content is not a file, return null
@@ -21,11 +21,12 @@ export const getTodo = async (octoKit: OctoClient, repoContext: RepoContext) => 
 };
 
 export const getReadme = async (octoKit: OctoClient, repoContext: RepoContext) => {
-	const {owner, repo} = repoContext;
+	const {owner, repo, branch} = repoContext;
 
 	const readme = await octoKit.rest.repos.getReadme({
 		owner,
 		repo,
+		ref: branch,
 	});
 
 	if (readme.status !== 200 || typeof readme.data.content !== 'string') return null; //failed to get file
@@ -43,11 +44,12 @@ export const updateReadme = async (
 	newContent: string,
 	sha: string
 ): Promise<void> => {
-	const {owner, repo} = repoContext;
+	const {owner, repo, branch} = repoContext;
 
 	await octoKit.rest.repos.createOrUpdateFileContents({
 		owner,
 		repo,
+		branch: branch,
 		path: path,
 		message: 'Update README.md',
 		content: Buffer.from(newContent).toString('base64'),

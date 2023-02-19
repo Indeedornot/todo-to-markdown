@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import {getReadme, getTodo, updateReadme} from './io';
 import {createSegment, getSegment, updateSegment} from './segments';
+import {RepoContext} from './index';
 
 const run = async (): Promise<void> => {
 	try {
@@ -9,8 +10,13 @@ const run = async (): Promise<void> => {
 		if (!githubToken) throw new Error('No github token found');
 		core.debug('Github token found');
 
+		const branch = core.getInput('BRANCH', {required: true});
+
 		const octoKit = github.getOctokit(githubToken);
-		const repoContext = github.context.repo;
+		const repoContext: RepoContext = {
+			...github.context.repo,
+			branch: branch,
+		};
 		core.debug('Github context found');
 
 		const readme = await getReadme(octoKit, repoContext);
