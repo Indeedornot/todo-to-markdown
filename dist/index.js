@@ -105,19 +105,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const github_1 = __importDefault(__nccwpck_require__(5438));
+const github = __importStar(__nccwpck_require__(5438));
 const io_1 = __nccwpck_require__(1915);
 const segments_1 = __nccwpck_require__(6007);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const githubToken = core.getInput('GH_TOKEN', { required: true });
-        const octoKit = github_1.default.getOctokit(githubToken);
-        const repoContext = github_1.default.context.repo;
+        const octoKit = github.getOctokit(githubToken);
+        const repoContext = github.context.repo;
         const readme = yield (0, io_1.getReadme)(octoKit, repoContext);
         if (readme == null)
             throw new Error('No readme found');
