@@ -1,5 +1,6 @@
 import * as fs from 'fs/promises';
 import {createSegment, getSegment, updateSegment} from '../src/segments';
+import * as github from '@actions/github';
 
 const getFileContents = async (path: string) => {
 	//read content from ./testData
@@ -15,51 +16,105 @@ const updateFileContents = async (path: string, newContent: string) => {
 };
 
 describe('Tests with mock functions', () => {
-	test('Readme', async () => {
-		const paths = {
-			readme: './__tests__/readme-test/README.md',
-			expected: './__tests__/readme-test/README_EXPECTED.md',
-			new: './__tests__/readme-test/README_NEW.md',
-			todo: './__tests__/readme-test/TODO',
-		};
+	test('Readme', () => {
+		const todo = `
+Some Todo header:
+    ☐ Some todo item
+    ☐ Some other todo item
+    
+Some Done header:
+    ✔ Some done item @done(23-02-19 09:56)
+    ✔ Some other done item @done(23-02-19 09:56)
+`;
 
-		const readme = await getFileContents(paths.readme);
-		if (!readme) throw new Error('No readme found');
+		const readme = `
+This is some sample readme file for testing purposes.
 
-		const segment = getSegment(readme.content);
+Hi, I am a sample readme file. I am used for testing purposes.
+
+<!-- start: readme-segment -->
+
+<!-- end: readme-segment -->
+
+Hi!
+`;
+
+		const expected = `
+This is some sample readme file for testing purposes.
+
+Hi, I am a sample readme file. I am used for testing purposes.
+
+<!-- start: readme-segment -->
+
+### Some Todo header:
+
+- [ ] Some todo item
+- [ ] Some other todo item
+
+### Some Done header:
+
+- [x] Some done item @done(23-02-19 09:56)
+- [x] Some other done item @done(23-02-19 09:56)
+
+<!-- end: readme-segment -->
+
+Hi!	
+`;
+
+		const segment = getSegment(readme);
 		if (segment === null) throw new Error('No segment found');
 
-		const todo = await getFileContents(paths.todo);
-		if (!todo) throw new Error('No todo found');
-
-		const newSegment = createSegment(todo.content);
+		const newSegment = createSegment(todo);
 		if (newSegment === segment) return; //no changes
 
-		const newReadme = updateSegment(readme.content, newSegment);
-		await updateFileContents(paths.new, newReadme);
+		//if not in CI, write new readme to file for manual inspection
+		if (github.context.job === undefined) {
+			const newReadme = updateSegment(readme, newSegment);
+			updateFileContents('./__tests__/readme-test/README_NEW.md', newReadme).catch((err) => {});
+		}
 
-		const expectedReadme = getFileContents(paths.expected);
-		const expectedSegment = getSegment((await expectedReadme).content);
+		const expectedSegment = getSegment(expected);
+		if (expectedSegment === null) throw new Error('No segment found in expected readme');
 
 		const areEqual = expectedSegment === newSegment;
+		console.log(areEqual);
+
 		expect(areEqual).toBe(true);
 	});
 
-	test('Segment', async () => {
-		const paths = {
-			todo: './__tests__/segment-test/TODO',
-			new: './__tests__/segment-test/SEGMENT-NEW.md',
-			expected: './__tests__/segment-test/SEGMENT-EXPECTED.md',
-		};
+	test('Segment', () => {
+		const todo = `
+☐ Some beginning item
 
-		const todo = await getFileContents(paths.todo);
-		if (!todo) throw new Error('No todo found');
+Some Todo header:
+    ☐ Some todo item
+    ☐ Some other todo item
+    
+Some Done header:
+    ✔ Some done item @done(23-02-19 09:56)
+    ✔ Some other done item @done(23-02-19 09:56)
+`;
 
-		const newSegment = createSegment(todo.content);
-		await updateFileContents(paths.new, newSegment);
+		const expected = `- [ ] Some beginning item
 
-		const expectedSegment = await getFileContents(paths.expected);
-		const areEqual = expectedSegment.content === newSegment;
+### Some Todo header:
+
+- [ ] Some todo item
+- [ ] Some other todo item
+
+### Some Done header:
+
+- [x] Some done item @done(23-02-19 09:56)
+- [x] Some other done item @done(23-02-19 09:56)`;
+
+		const newSegment = createSegment(todo);
+
+		if (github.context.job === undefined) {
+			updateFileContents('./__tests__/segment-test/SEGMENT-NEW.md', newSegment).catch((err) => {});
+		}
+
+		const areEqual = expected === newSegment;
+		console.log(areEqual);
 		expect(areEqual).toBe(true);
 	});
 });
