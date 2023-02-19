@@ -4,9 +4,6 @@ export const getTodo = async (octoKit: OctoClient, repoContext: RepoContext) => 
 	const {owner, repo} = repoContext;
 
 	const todo = await octoKit.rest.repos.getContent({
-		mediaType: {
-			format: 'raw',
-		},
 		owner,
 		repo,
 		path: 'TODO',
@@ -27,12 +24,8 @@ export const getReadme = async (octoKit: OctoClient, repoContext: RepoContext) =
 	const {owner, repo} = repoContext;
 
 	const readme = await octoKit.rest.repos.getReadme({
-		mediaType: {
-			format: 'raw',
-		},
 		owner,
 		repo,
-		path: 'README.md',
 	});
 
 	if (readme.status !== 200 || typeof readme.data.content !== 'string') return null; //failed to get file
