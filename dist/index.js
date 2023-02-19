@@ -21,11 +21,11 @@ const getTodo = (octoKit, repoContext) => __awaiter(void 0, void 0, void 0, func
     const { owner, repo } = repoContext;
     const todo = yield octoKit.rest.repos.getContent({
         mediaType: {
-            format: 'raw'
+            format: 'raw',
         },
         owner,
         repo,
-        path: 'TODO'
+        path: 'TODO',
     });
     // If content is not a file, return null
     if (todo.status !== 200)
@@ -41,11 +41,11 @@ const getReadme = (octoKit, repoContext) => __awaiter(void 0, void 0, void 0, fu
     const { owner, repo } = repoContext;
     const readme = yield octoKit.rest.repos.getReadme({
         mediaType: {
-            format: 'raw'
+            format: 'raw',
         },
         owner,
         repo,
-        path: 'README.md'
+        path: 'README.md',
     });
     if (readme.status !== 200)
         return null; //failed to get file
@@ -60,7 +60,7 @@ const updateReadme = (octoKit, repoContext, path, newContent, sha) => __awaiter(
         path: path,
         message: 'Update README.md',
         content: Buffer.from(newContent).toString('base64'),
-        sha: sha
+        sha: sha,
     });
 });
 exports.updateReadme = updateReadme;
@@ -152,7 +152,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.updateSegment = exports.createSegment = exports.getSegment = void 0;
 const segment = {
     start: '<!-- start: readme-segment -->',
-    end: '<!-- end: readme-segment -->'
+    end: '<!-- end: readme-segment -->',
 };
 const segmentRegex = new RegExp(`${segment.start}(.*)${segment.end}`, 's');
 const getSegment = (readme) => {
