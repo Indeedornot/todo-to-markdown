@@ -15,8 +15,8 @@ export const getTodo = async (octoKit: OctoClient, repoContext: RepoContext) => 
 	// If content is not a file, return null
 	if (todo.status !== 200) return null; //failed to get file
 	if (Array.isArray(todo.data)) return null; //is directory
-	if (!('content' in todo.data) || todo.data.type !== 'file') return null; //is not a file
-
+	if (todo.data.type !== 'file') return null; //is not a file
+	if (!('content' in todo.data) || typeof todo.data.content !== 'string') return null; //no content
 	return {
 		...todo.data,
 		content: Buffer.from(todo.data.content, 'base64').toString(),
@@ -35,7 +35,7 @@ export const getReadme = async (octoKit: OctoClient, repoContext: RepoContext) =
 		path: 'README.md',
 	});
 
-	if (readme.status !== 200) return null; //failed to get file
+	if (readme.status !== 200 || typeof readme.data.content !== 'string') return null; //failed to get file
 
 	return {
 		...readme.data,

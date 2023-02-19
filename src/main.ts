@@ -6,6 +6,8 @@ import {createSegment, getSegment, updateSegment} from './segments';
 const run = async (): Promise<void> => {
 	try {
 		const githubToken = core.getInput('GH_TOKEN', {required: true});
+		if (!githubToken) throw new Error('No github token found');
+
 		const octoKit = github.getOctokit(githubToken);
 		const repoContext = github.context.repo;
 
