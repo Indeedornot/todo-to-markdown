@@ -44,4 +44,22 @@ describe('Tests with mock functions', () => {
 		const areEqual = expectedSegment === newSegment;
 		expect(areEqual).toBe(true);
 	});
+
+	test('Segment', async () => {
+		const paths = {
+			todo: './__tests__/segment-test/TODO',
+			new: './__tests__/segment-test/SEGMENT-NEW.md',
+			expected: './__tests__/segment-test/SEGMENT-EXPECTED.md',
+		};
+
+		const todo = await getFileContents(paths.todo);
+		if (!todo) throw new Error('No todo found');
+
+		const newSegment = createSegment(todo.content);
+		await updateFileContents(paths.new, newSegment);
+
+		const expectedSegment = getFileContents(paths.expected);
+		const areEqual = (await expectedSegment).content === newSegment;
+		expect(areEqual).toBe(true);
+	});
 });
