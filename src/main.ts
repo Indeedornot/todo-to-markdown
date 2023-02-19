@@ -7,33 +7,33 @@ const run = async (): Promise<void> => {
 	try {
 		const githubToken = core.getInput('GH_TOKEN', {required: true});
 		if (!githubToken) throw new Error('No github token found');
-		core.info('Github token found');
+		core.debug('Github token found');
 
 		const octoKit = github.getOctokit(githubToken);
 		const repoContext = github.context.repo;
-		core.info('Github context found');
+		core.debug('Github context found');
 
 		const readme = await getReadme(octoKit, repoContext);
 		if (readme == null) throw new Error('No readme found');
-		core.info('Readme found');
+		core.debug('Readme found');
 
 		const segment = getSegment(readme.content);
 		if (segment == null) throw new Error('No segment found');
-		core.info('Segment found in readme');
+		core.debug('Segment found in readme');
 
 		const todo = await getTodo(octoKit, repoContext);
 		if (todo == null) throw new Error('No todo found');
-		core.info('Todo found');
+		core.debug('Todo found');
 
 		const newSegment = createSegment(todo.content);
 		if (newSegment === segment) {
-			core.info('No changes to readme');
+			core.debug('No changes to readme');
 			return;
 		}
 
 		const newReadme = updateSegment(readme.content, newSegment);
 		await updateReadme(octoKit, repoContext, readme.path, newReadme, readme.sha);
-		core.info('Readme updated');
+		core.debug('Readme updated');
 	} catch (error) {
 		if (error instanceof Error) core.setFailed(error.message);
 	}
