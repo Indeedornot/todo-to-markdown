@@ -18,11 +18,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.updateReadme = exports.getReadme = exports.getTodo = void 0;
 const getTodo = (octoKit, repoContext) => __awaiter(void 0, void 0, void 0, function* () {
-    const { owner, repo } = repoContext;
+    const { owner, repo, branch } = repoContext;
     const todo = yield octoKit.rest.repos.getContent({
         owner,
         repo,
         path: 'TODO',
+        ref: branch,
     });
     // If content is not a file, return null
     if (todo.status !== 200)
@@ -37,10 +38,11 @@ const getTodo = (octoKit, repoContext) => __awaiter(void 0, void 0, void 0, func
 });
 exports.getTodo = getTodo;
 const getReadme = (octoKit, repoContext) => __awaiter(void 0, void 0, void 0, function* () {
-    const { owner, repo } = repoContext;
+    const { owner, repo, branch } = repoContext;
     const readme = yield octoKit.rest.repos.getReadme({
         owner,
         repo,
+        ref: branch,
     });
     if (readme.status !== 200 || typeof readme.data.content !== 'string')
         return null; //failed to get file
@@ -48,10 +50,11 @@ const getReadme = (octoKit, repoContext) => __awaiter(void 0, void 0, void 0, fu
 });
 exports.getReadme = getReadme;
 const updateReadme = (octoKit, repoContext, path, newContent, sha) => __awaiter(void 0, void 0, void 0, function* () {
-    const { owner, repo } = repoContext;
+    const { owner, repo, branch } = repoContext;
     yield octoKit.rest.repos.createOrUpdateFileContents({
         owner,
         repo,
+        branch: branch,
         path: path,
         message: 'Update README.md',
         content: Buffer.from(newContent).toString('base64'),
@@ -111,8 +114,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (!githubToken)
             throw new Error('No github token found');
         core.debug('Github token found');
+        const branch = core.getInput('BRANCH', { required: true });
         const octoKit = github.getOctokit(githubToken);
-        const repoContext = github.context.repo;
+        const repoContext = Object.assign(Object.assign({}, github.context.repo), { branch: branch });
         core.debug('Github context found');
         const readme = yield (0, io_1.getReadme)(octoKit, repoContext);
         if (readme == null)
