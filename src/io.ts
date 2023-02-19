@@ -1,5 +1,3 @@
-import github from '@actions/github';
-import {GitHub} from '@actions/github/lib/utils';
 import {OctoClient, RepoContext} from '.';
 
 export const getTodo = async (octoKit: OctoClient, repoContext: RepoContext) => {
