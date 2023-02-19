@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import github from '@actions/github';
+import * as github from '@actions/github';
 import {getReadme, getTodo, updateReadme} from './io';
 import {createSegment, getSegment, updateSegment} from './segments';
 
