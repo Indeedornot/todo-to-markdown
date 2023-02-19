@@ -5,15 +5,14 @@
 # We need to make sure the checked-in `index.js` actually matches what we expect it to be.
 name: Check dist/
 
+#https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#example-using-a-public-action
 on:
   push:
-    branches:
-      - main
-    paths-ignore:
-      - '**.md'
+s    paths:
+      - 'TODO'
   pull_request:
-    paths-ignore:
-      - '**.md'
+    paths:
+      - 'TODO'
   workflow_dispatch:
 
 jobs:
