@@ -2,14 +2,6 @@ import * as fs from 'fs/promises';
 import {createSegment, getSegment, updateSegment} from '../src/segments';
 import * as github from '@actions/github';
 
-const getFileContents = async (path: string) => {
-	//read content from ./testData
-	const readme = await fs.readFile(path, 'utf8');
-	return {
-		content: readme,
-	};
-};
-
 const updateFileContents = async (path: string, newContent: string) => {
 	//write content to ./testData
 	await fs.writeFile(path, newContent);
