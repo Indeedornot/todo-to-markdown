@@ -1,6 +1,11 @@
 ## Roadmap
 
 <!-- start: readme-segment -->
+Major:
+    ☐ Make run on push of TODO
+
+Minor:
+    ☐ Add better formatting
 <!-- end: readme-segment -->
 
 ## Code in Main
