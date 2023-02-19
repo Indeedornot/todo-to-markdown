@@ -4,3 +4,9 @@ author: 'Indeedornot'
 runs:
   using: 'node16'
   main: 'dist/index.js'
+
+inputs:
+  GH_TOKEN:
+    description: 'GitHub access token with Repo scope'
+    default: ${{ github.token }}
+    required: true
