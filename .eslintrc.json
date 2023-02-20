@@ -1,11 +1,10 @@
 {
 	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
-	"plugins": ["prettier"],
+	"plugins": ["jest", "prettier"],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"ecmaVersion": 9,
-		"sourceType": "module",
-		"project": "./tsconfig.json"
+		"sourceType": "module"
 	},
 	"rules": {
 		"@typescript-eslint/explicit-function-return-type": "off",
@@ -14,6 +13,7 @@
 	},
 	"env": {
 		"node": true,
-		"es6": true
+		"es6": true,
+		"jest/globals": true
 	}
 }
