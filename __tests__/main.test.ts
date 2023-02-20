@@ -62,7 +62,7 @@ Hi!
 		//if not in CI, write new readme to file for manual inspection
 		if (github.context.job === undefined) {
 			const newReadme = updateSegment(readme, newSegment);
-			updateFileContents('./__tests__/readme-test/README_NEW.md', newReadme).catch((err) => {});
+			updateFileContents('./__tests__/debug/readme-test/README_NEW.md', newReadme).catch((err) => {});
 		}
 
 		const expectedSegment = getSegment(expected);
@@ -102,7 +102,7 @@ Some Done header:
 		const newSegment = createSegment(todo);
 
 		if (github.context.job === undefined) {
-			updateFileContents('./__tests__/segment-test/SEGMENT-NEW.md', newSegment).catch((err) => {});
+			updateFileContents('./__tests__/debug/segment-test/SEGMENT-NEW.md', newSegment).catch((err) => {});
 		}
 
 		const areEqual = expected === newSegment;
