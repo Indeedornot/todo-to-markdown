@@ -45,7 +45,7 @@ export const createSegment = (todo: string) => {
 };
 
 const wrapSegment = (content: string) => {
-	return `${segment.start}\\n\n${content}\n\n${segment.end}`;
+	return `${segment.start}\n\n${content}\n\n${segment.end}`;
 };
 
 export const updateSegment = (readme: string, segment: string) => {
