@@ -1,3 +1,6 @@
+import {isTask, taskToMarkdown} from './task';
+import {isStringEmpty} from './jsUtils';
+
 const segment = {
 	start: '<!-- start: readme-segment -->',
 	end: '<!-- end: readme-segment -->',
@@ -10,22 +13,6 @@ export const getSegment = (readme: string): string | null => {
 	return matches[1].trim();
 };
 
-const taskStatus = {
-	notDone: '☐',
-	done: '✔',
-};
-
-const isTask = (line: string) => {
-	return line[0] === taskStatus.notDone || line[0] === taskStatus.done;
-};
-
-const taskToMarkdown = (line: string) => {
-	const status = line[0];
-	const done = status === taskStatus.done;
-	const task = line.slice(2).trim();
-	return `- [${done ? 'x' : ' '}] ${task}`;
-};
-
 const formatHeader = (header: string) => {
 	return `\n### ${header}\n`;
 };
@@ -34,11 +21,14 @@ export const createSegment = (todo: string) => {
 	//split on new lines and remove empty lines
 	const lines = todo.trim().split(/\s*[\r?\n]+\s*/g);
 	const formattedLines = lines.map((line) => {
-		if (!isTask(line)) {
+		const task = isTask(line);
+
+		// '- [ ]  ' is invalid checkbox syntax
+		if (task == null || isStringEmpty(task.text)) {
 			return formatHeader(line);
 		}
 
-		return taskToMarkdown(line);
+		return taskToMarkdown(task);
 	});
 
 	return formattedLines.join('\n').trim();
