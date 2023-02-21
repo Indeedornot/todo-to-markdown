@@ -57,7 +57,6 @@ Hi!
 		if (segment === null) throw new Error('No segment found');
 
 		const newSegment = createSegment(todo);
-		if (newSegment === segment) return; //no changes
 
 		//if not in CI, write new readme to file for manual inspection
 		if (github.context.job === undefined) {
@@ -74,8 +73,9 @@ Hi!
 		expect(areEqual).toBe(true);
 	});
 
-	test('Segment', () => {
-		const todo = `
+	describe('Segment', () => {
+		test('Standard', () => {
+			const todo = `
 ☐ Some beginning item
 
 Some Todo header:
@@ -87,7 +87,7 @@ Some Done header:
     ✔ Some other done item @done(23-02-19 09:56)
 `;
 
-		const expected = `- [ ] Some beginning item
+			const expected = `- [ ] Some beginning item
 
 ### Some Todo header:
 
@@ -99,14 +99,54 @@ Some Done header:
 - [x] Some done item @done(23-02-19 09:56)
 - [x] Some other done item @done(23-02-19 09:56)`;
 
-		const newSegment = createSegment(todo);
+			const newSegment = createSegment(todo);
 
-		if (github.context.job === undefined) {
-			updateFileContents('./__tests__/debug/segment-test/SEGMENT-NEW.md', newSegment).catch((err) => {});
-		}
+			if (github.context.job === undefined) {
+				updateFileContents('./__tests__/debug/segment-test/SEGMENT-NEW.md', newSegment).catch((err) => {});
+			}
 
-		const areEqual = expected === newSegment;
-		console.log(areEqual);
-		expect(areEqual).toBe(true);
+			const areEqual = expected === newSegment;
+			console.log(areEqual);
+			expect(areEqual).toBe(true);
+		});
+
+		test('With Empty', () => {
+			const todo = `
+☐ Some beginning item
+
+Some Todo header:
+    ☐ Some todo item
+    ☐ Some other todo item
+	☐
+	
+Some Done header:
+    ✔ Some done item @done(23-02-19 09:56)
+    ✔ Some other done item @done(23-02-19 09:56)
+	✔
+`;
+
+			const expected = `- [ ] Some beginning item
+
+### Some Todo header:
+
+- [ ] Some todo item
+- [ ] Some other todo item
+
+### Some Done header:
+
+- [x] Some done item @done(23-02-19 09:56)
+- [x] Some other done item @done(23-02-19 09:56)`;
+
+			const newSegment = createSegment(todo);
+
+			//if not in CI, write new readme to file for manual inspection
+			if (github.context.job === undefined) {
+				updateFileContents('./__tests__/debug/segment-test/SEGMENT-NEW-EMPTY.md', newSegment).catch((err) => {});
+			}
+
+			const areEqual = expected === newSegment;
+			console.log(areEqual);
+			expect(areEqual).toBe(true);
+		});
 	});
 });

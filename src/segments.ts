@@ -20,15 +20,17 @@ const formatHeader = (header: string) => {
 export const createSegment = (todo: string) => {
 	//split on new lines and remove empty lines
 	const lines = todo.trim().split(/\s*[\r?\n]+\s*/g);
-	const formattedLines = lines.map((line) => {
+	const formattedLines: string[] = [];
+	lines.forEach((line) => {
 		const task = isTask(line);
-
 		// '- [ ]  ' is invalid checkbox syntax
-		if (task == null || isStringEmpty(task.text)) {
-			return formatHeader(line);
+		if (!task) {
+			formattedLines.push(formatHeader(line));
+			return;
 		}
 
-		return taskToMarkdown(task);
+		if (isStringEmpty(task.text)) return;
+		formattedLines.push(taskToMarkdown(task));
 	});
 
 	return formattedLines.join('\n').trim();

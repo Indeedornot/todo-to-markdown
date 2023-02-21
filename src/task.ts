@@ -31,10 +31,10 @@ export const taskRegex = {
 
 export const isTask = (line: string) => {
 	const boxTask = getBoxTask(line);
-	if (boxTask) return {done: false, text: boxTask};
+	if (boxTask !== null) return {done: false, text: boxTask};
 
 	const doneTask = getDoneTask(line);
-	if (doneTask) return {done: true, text: doneTask};
+	if (doneTask !== null) return {done: true, text: doneTask};
 
 	return null;
 };
