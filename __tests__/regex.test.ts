@@ -12,6 +12,11 @@ describe('Test task capture regex', () => {
 				const whitespaceMatch = isTask(whitespaceTask);
 				expect(whitespaceMatch).not.toBeNull();
 				expect(whitespaceMatch?.done).toBe(false);
+
+				const whitespaceTask2 = `  ${symbol}   Task`;
+				const whitespaceMatch2 = isTask(whitespaceTask2);
+				expect(whitespaceMatch2).not.toBeNull();
+				expect(whitespaceMatch2?.done).toBe(false);
 			});
 		});
 
@@ -26,6 +31,11 @@ describe('Test task capture regex', () => {
 				const whitespaceMatch = isTask(whitespaceTask);
 				expect(whitespaceMatch).not.toBeNull();
 				expect(whitespaceMatch?.done).toBe(true);
+
+				const whitespaceTask2 = `  ${symbol}   Task`;
+				const whitespaceMatch2 = isTask(whitespaceTask2);
+				expect(whitespaceMatch2).not.toBeNull();
+				expect(whitespaceMatch2?.done).toBe(true);
 			});
 		});
 	});
