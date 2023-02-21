@@ -4,12 +4,14 @@
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"ecmaVersion": 9,
-		"sourceType": "module"
+		"sourceType": "module",
+		"project": "./tsconfig.eslint.json"
 	},
 	"rules": {
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"prefer-const": "error",
-		"eqeqeq": ["error", "smart"]
+		"eqeqeq": ["error", "smart"],
+		"@typescript-eslint/strict-boolean-expressions": "warn"
 	},
 	"env": {
 		"node": true,
