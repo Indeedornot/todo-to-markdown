@@ -1,5 +1,5 @@
 import {isTask, taskToMarkdown} from './task';
-import { isStringEmpty, getNonEmptyLines, trimEmptyLines } from './jsUtils';
+import {isStringEmpty, getNonEmptyLines, trimEmptyLines, countLeadingWhitespaces} from './jsUtils';
 
 const segment = {
 	start: '<!-- start: readme-segment -->',
@@ -14,7 +14,7 @@ export const getSegment = (readme: string): string | null => {
 };
 
 const formatHeader = (header: string) => {
-	return `\n### ${header}\n`;
+	return `\n- ${header}\n`;
 };
 
 /**

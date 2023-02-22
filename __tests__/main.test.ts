@@ -11,12 +11,12 @@ describe('Tests with mock functions', () => {
 	test('Readme', () => {
 		const todo = `
 Some Todo header:
-    ☐ Some todo item
-    ☐ Some other todo item
+  ☐ Some todo item
+  ☐ Some other todo item
     
 Some Done header:
-    ✔ Some done item @done(23-02-19 09:56)
-    ✔ Some other done item @done(23-02-19 09:56)
+  ✔ Some done item @done(23-02-19 09:56)
+  ✔ Some other done item @done(23-02-19 09:56)
 `;
 
 		const readme = `
@@ -38,15 +38,15 @@ Hi, I am a sample readme file. I am used for testing purposes.
 
 <!-- start: readme-segment -->
 
-### Some Todo header:
+- Some Todo header:
 
-- [ ] Some todo item
-- [ ] Some other todo item
+  - [ ] Some todo item
+  - [ ] Some other todo item
 
-### Some Done header:
+- Some Done header:
 
-- [x] Some done item @done(23-02-19 09:56)
-- [x] Some other done item @done(23-02-19 09:56)
+  - [x] Some done item @done(23-02-19 09:56)
+  - [x] Some other done item @done(23-02-19 09:56)
 
 <!-- end: readme-segment -->
 
@@ -61,7 +61,7 @@ Hi!
 		//if not in CI, write new readme to file for manual inspection
 		if (github.context.job === undefined) {
 			const newReadme = updateSegment(readme, newSegment);
-			updateFileContents('./__tests__/debug/readme-test/README_NEW.md', newReadme).catch((err) => {});
+			updateFileContents('./__tests__/debug/readme-test/README_NEW.md', newReadme);
 		}
 
 		const expectedSegment = getSegment(expected);
@@ -78,30 +78,30 @@ Hi!
 			const todo = `☐ Some beginning item
 
 Some Todo header:
-    ☐ Some todo item
-    ☐ Some other todo item
+  ☐ Some todo item
+  ☐ Some other todo item
     
 Some Done header:
-    ✔ Some done item @done(23-02-19 09:56)
-    ✔ Some other done item @done(23-02-19 09:56)
+  ✔ Some done item @done(23-02-19 09:56)
+  ✔ Some other done item @done(23-02-19 09:56)
 `;
 
 			const expected = `- [ ] Some beginning item
 
-### Some Todo header:
+- Some Todo header:
 
-- [ ] Some todo item
-- [ ] Some other todo item
+  - [ ] Some todo item
+  - [ ] Some other todo item
 
-### Some Done header:
+- Some Done header:
 
-- [x] Some done item @done(23-02-19 09:56)
-- [x] Some other done item @done(23-02-19 09:56)`;
+  - [x] Some done item @done(23-02-19 09:56)
+  - [x] Some other done item @done(23-02-19 09:56)`;
 
 			const newSegment = createSegment(todo);
 
 			if (github.context.job === undefined) {
-				updateFileContents('./__tests__/debug/segment-test/SEGMENT-NEW.md', newSegment).catch((err) => {});
+				updateFileContents('./__tests__/debug/segment-test/SEGMENT-NEW.md', newSegment);
 			}
 
 			const areEqual = expected === newSegment;
@@ -114,33 +114,33 @@ Some Done header:
 ☐ Some beginning item
 
 Some Todo header:
-    ☐ Some todo item
-    ☐ Some other todo item
-	☐
+  ☐ Some todo item
+  ☐ Some other todo item
+  ☐
 	
 Some Done header:
-    ✔ Some done item @done(23-02-19 09:56)
-    ✔ Some other done item @done(23-02-19 09:56)
-	✔
+  ✔ Some done item @done(23-02-19 09:56)
+  ✔ Some other done item @done(23-02-19 09:56)
+  ✔
 `;
 
 			const expected = `- [ ] Some beginning item
 
-### Some Todo header:
+- Some Todo header:
 
-- [ ] Some todo item
-- [ ] Some other todo item
+  - [ ] Some todo item
+  - [ ] Some other todo item
 
-### Some Done header:
+- Some Done header:
 
-- [x] Some done item @done(23-02-19 09:56)
-- [x] Some other done item @done(23-02-19 09:56)`;
+  - [x] Some done item @done(23-02-19 09:56)
+  - [x] Some other done item @done(23-02-19 09:56)`;
 
 			const newSegment = createSegment(todo);
 
 			//if not in CI, write new readme to file for manual inspection
 			if (github.context.job === undefined) {
-				updateFileContents('./__tests__/debug/segment-test/SEGMENT-NEW-EMPTY.md', newSegment).catch((err) => {});
+				updateFileContents('./__tests__/debug/segment-test/SEGMENT-NEW-EMPTY.md', newSegment);
 			}
 
 			const areEqual = expected === newSegment;

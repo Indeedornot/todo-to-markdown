@@ -24,3 +24,8 @@ export const trimLeadingEmptyLines = (text: string): string => {
 export const trimTrailingEmptyLines = (text: string): string => {
 	return text.replace(/(\r?\n)\s*$(?!(\r?\n))/, '');
 };
+
+export const addLeadingWhitespace = (text: string, count: number): string => {
+	const whitespace = ' '.repeat(count);
+	return `${whitespace}${text}`;
+};

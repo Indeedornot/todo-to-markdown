@@ -1,3 +1,4 @@
+import {countLeadingWhitespaces, addLeadingWhitespace} from './jsUtils';
 const makeTaskRegex = (symbols: string[]) => {
 	const characterSymbols = symbols.filter((symbol) => symbol.length === 1);
 	const wordSymbols = symbols.filter((symbol) => symbol.length > 1);
@@ -29,10 +30,11 @@ export const taskRegex = {
 
 export const isTask = (line: string) => {
 	const boxTask = getBoxTask(line);
-	if (boxTask !== null) return {done: false, text: boxTask};
+	const indent = countLeadingWhitespaces(line);
+	if (boxTask !== null) return {done: false, text: boxTask, indent: indent};
 
 	const doneTask = getDoneTask(line);
-	if (doneTask !== null) return {done: true, text: doneTask};
+	if (doneTask !== null) return {done: true, text: doneTask, indent: indent};
 
 	return null;
 };
@@ -51,6 +53,7 @@ const getBoxTask = (text: string) => {
 	return boxMatch[3];
 };
 
-export const taskToMarkdown = ({done, text}: {done: boolean; text: string}) => {
-	return `- [${done ? 'x' : ' '}] ${text}`;
+export const taskToMarkdown = ({done, text, indent}: {done: boolean; text: string; indent: number}) => {
+	const md = `- [${done ? 'x' : ' '}] ${text}`;
+	return addLeadingWhitespace(md, indent);
 };

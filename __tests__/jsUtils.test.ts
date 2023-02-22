@@ -4,6 +4,7 @@ import {
 	isStringEmpty,
 	trimTrailingEmptyLines,
 	trimLeadingEmptyLines,
+	addLeadingWhitespace,
 } from '../src/jsUtils';
 
 describe('jsUtils', () => {
@@ -63,5 +64,19 @@ describe('jsUtils', () => {
 
 		const emptyLines = trimLeadingEmptyLines(`\nnot empty\n\n`);
 		expect(emptyLines).toEqual(`not empty\n\n`);
+	});
+
+	test('addLeadingWhitespace', () => {
+		const empty = addLeadingWhitespace('', 0);
+		expect(empty).toEqual('');
+
+		const empty2 = addLeadingWhitespace('', 2);
+		expect(empty2).toEqual('  ');
+
+		const notEmpty0 = addLeadingWhitespace('not empty', 0);
+		expect(notEmpty0).toEqual('not empty');
+
+		const notEmpty2 = addLeadingWhitespace(`not empty`, 2);
+		expect(notEmpty2).toEqual(`  not empty`);
 	});
 });
