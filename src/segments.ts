@@ -1,5 +1,5 @@
 import {isTask, taskToMarkdown} from './task';
-import {isStringEmpty} from './jsUtils';
+import { isStringEmpty, getNonEmptyLines, trimEmptyLines } from './jsUtils';
 
 const segment = {
 	start: '<!-- start: readme-segment -->',
@@ -10,16 +10,25 @@ const segmentRegex = new RegExp(`${segment.start}(.*)${segment.end}`, 's');
 export const getSegment = (readme: string): string | null => {
 	const matches = readme.match(segmentRegex);
 	if (!matches || matches.length < 2) return null;
-	return matches[1].trim();
+	return trimEmptyLines(matches[1]);
 };
 
 const formatHeader = (header: string) => {
 	return `\n### ${header}\n`;
 };
 
+/**
+ * Creates a segment from todo
+ * Removes empty lines - including start and end
+ */
 export const createSegment = (todo: string) => {
-	//split on new lines and remove empty lines
-	const lines = todo.trim().split(/\s*[\r?\n]+\s*/g);
+	const lines = getNonEmptyLines(todo);
+	const formattedLines = formatLines(lines);
+
+	return formattedLines.join('\n').trim();
+};
+
+const formatLines = (lines: string[]) => {
 	const formattedLines: string[] = [];
 	lines.forEach((line) => {
 		const task = isTask(line);
@@ -33,7 +42,7 @@ export const createSegment = (todo: string) => {
 		formattedLines.push(taskToMarkdown(task));
 	});
 
-	return formattedLines.join('\n').trim();
+	return formattedLines;
 };
 
 const wrapSegment = (content: string) => {

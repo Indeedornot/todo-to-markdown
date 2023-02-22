@@ -1,5 +1,3 @@
-import {isStringEmpty} from './jsUtils';
-
 const makeTaskRegex = (symbols: string[]) => {
 	const characterSymbols = symbols.filter((symbol) => symbol.length === 1);
 	const wordSymbols = symbols.filter((symbol) => symbol.length > 1);

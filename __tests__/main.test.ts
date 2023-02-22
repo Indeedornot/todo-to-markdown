@@ -75,8 +75,7 @@ Hi!
 
 	describe('Segment', () => {
 		test('Standard', () => {
-			const todo = `
-☐ Some beginning item
+			const todo = `☐ Some beginning item
 
 Some Todo header:
     ☐ Some todo item
