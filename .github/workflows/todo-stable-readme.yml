@@ -1,0 +1,22 @@
+name: Todo+ Roadmap
+
+on:
+  push:
+    paths:
+      - 'TODO'
+  pull_request:
+    paths:
+      - 'TODO'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    name: Update Todo in Readme
+    runs-on: ubuntu-latest
+    steps:
+      - uses: indeedornot/todo-to-markdown@main
+        with:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
