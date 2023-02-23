@@ -19,15 +19,17 @@ If you use [Todo+](https://github.com/fabiospampinato/vscode-todo-plus) for trac
 ## Roadmap
 
 <!-- start: readme-segment -->
+
+- Formatting:
+
+    - [ ] Format '@done(Date)' in done tasks
+
+- Tasks:
+
+    - [ ] Handle due tasks
+    - [ ] Handle abandoned tasks
+
 <!-- end: readme-segment -->
-
-## Usage
-
-1. Add the following segment to your README file where you want your todo to appear:
-
-   ```text
-   <!-- start: readme-segment -->
-   <!-- end: readme-segment -->
    ```
 
 2. Click **Action** tab and choose **Set up a workflow yourself**.
