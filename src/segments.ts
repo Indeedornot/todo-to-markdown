@@ -6,7 +6,7 @@ const segment = {
 	end: '<!-- end: readme-segment -->',
 };
 
-const segmentRegex = new RegExp(`(?<=${segment.start})[\\s\\S]*?(?=${segment.end})`, 'g');
+const segmentRegex = new RegExp(`(?<=${segment.start})[\\s\\S]*?(?=${segment.end})`); //'g' to find all matches
 
 export const getSegment = (readme: string): string | null => {
 	const matches = readme.match(segmentRegex);
