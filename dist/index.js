@@ -66,6 +66,52 @@ exports.updateReadme = updateReadme;
 
 /***/ }),
 
+/***/ 6706:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.addLeadingWhitespace = exports.trimTrailingEmptyLines = exports.trimLeadingEmptyLines = exports.trimEmptyLines = exports.getNonEmptyLines = exports.countLeadingWhitespaces = exports.isStringEmpty = void 0;
+const isStringEmpty = (str) => {
+    if (str.trim().length === 0)
+        return true;
+    return false;
+};
+exports.isStringEmpty = isStringEmpty;
+const countLeadingWhitespaces = (str) => {
+    var _a, _b;
+    return (_b = (_a = str.match(/^\s*/)) === null || _a === void 0 ? void 0 : _a[0].length) !== null && _b !== void 0 ? _b : 0;
+};
+exports.countLeadingWhitespaces = countLeadingWhitespaces;
+//split on new lines and remove empty lines
+const getNonEmptyLines = (str) => {
+    var _a;
+    return (_a = str.match(/.*\S+?(.*)$/gm)) !== null && _a !== void 0 ? _a : [];
+};
+exports.getNonEmptyLines = getNonEmptyLines;
+const trimEmptyLines = (text) => {
+    const noLeading = (0, exports.trimLeadingEmptyLines)(text);
+    return (0, exports.trimTrailingEmptyLines)(noLeading);
+};
+exports.trimEmptyLines = trimEmptyLines;
+const trimLeadingEmptyLines = (text) => {
+    return text.replace(/^\s*(\r?\n)/, '');
+};
+exports.trimLeadingEmptyLines = trimLeadingEmptyLines;
+const trimTrailingEmptyLines = (text) => {
+    return text.replace(/(\r?\n)\s*$(?!(\r?\n))/, '');
+};
+exports.trimTrailingEmptyLines = trimTrailingEmptyLines;
+const addLeadingWhitespace = (text, count) => {
+    const whitespace = ' '.repeat(count);
+    return `${whitespace}${text}`;
+};
+exports.addLeadingWhitespace = addLeadingWhitespace;
+
+
+/***/ }),
+
 /***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -150,12 +196,14 @@ run();
 /***/ }),
 
 /***/ 6007:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.updateSegment = exports.createSegment = exports.getSegment = void 0;
+const task_1 = __nccwpck_require__(1409);
+const jsUtils_1 = __nccwpck_require__(6706);
 const segment = {
     start: '<!-- start: readme-segment -->',
     end: '<!-- end: readme-segment -->',
@@ -165,44 +213,106 @@ const getSegment = (readme) => {
     const matches = readme.match(segmentRegex);
     if (!matches || matches.length < 2)
         return null;
-    return matches[1].trim();
+    return (0, jsUtils_1.trimEmptyLines)(matches[1]);
 };
 exports.getSegment = getSegment;
-const taskStatus = {
-    notDone: '☐',
-    done: '✔',
-};
-const isTask = (line) => {
-    return line[0] === taskStatus.notDone || line[0] === taskStatus.done;
-};
-const taskToMarkdown = (line) => {
-    const status = line[0];
-    const done = status === taskStatus.done;
-    const task = line.slice(2).trim();
-    return `- [${done ? 'x' : ' '}] ${task}`;
-};
 const formatHeader = (header) => {
-    return `\r\n### ${header}\r\n`;
+    return `\n- ${header}\n`;
 };
+/**
+ * Creates a segment from todo
+ * Removes empty lines - including start and end
+ */
 const createSegment = (todo) => {
-    //split on new lines and remove empty lines
-    const lines = todo.trim().split(/\s*[\r?\n]+\s*/g);
-    const formattedLines = lines.map((line) => {
-        if (!isTask(line)) {
-            return formatHeader(line);
-        }
-        return taskToMarkdown(line);
-    });
-    return formattedLines.join('\r\n').trim();
+    const lines = (0, jsUtils_1.getNonEmptyLines)(todo);
+    const formattedLines = formatLines(lines);
+    return formattedLines.join('\n').trim();
 };
 exports.createSegment = createSegment;
+const formatLines = (lines) => {
+    const formattedLines = [];
+    lines.forEach((line) => {
+        const task = (0, task_1.isTask)(line);
+        // '- [ ]  ' is invalid checkbox syntax
+        if (!task) {
+            formattedLines.push(formatHeader(line));
+            return;
+        }
+        if ((0, jsUtils_1.isStringEmpty)(task.text))
+            return;
+        formattedLines.push((0, task_1.taskToMarkdown)(task));
+    });
+    return formattedLines;
+};
 const wrapSegment = (content) => {
-    return `${segment.start}\r\n\r\n${content}\r\n\r\n${segment.end}`;
+    return `${segment.start}\n\n${content}\n\n${segment.end}`;
 };
 const updateSegment = (readme, segment) => {
     return readme.replace(segmentRegex, wrapSegment(segment));
 };
 exports.updateSegment = updateSegment;
+
+
+/***/ }),
+
+/***/ 1409:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.taskToMarkdown = exports.isTask = exports.taskRegex = exports.taskSymbols = void 0;
+const jsUtils_1 = __nccwpck_require__(6706);
+const makeTaskRegex = (symbols) => {
+    const characterSymbols = symbols.filter((symbol) => symbol.length === 1);
+    const wordSymbols = symbols.filter((symbol) => symbol.length > 1);
+    const characterSymbolsRegex = characterSymbols.map((symbol) => `\\${symbol}`).join('');
+    //[-❍❑■⬜□☐▪▫–—≡→›]
+    const wordSymbolsRegex = wordSymbols
+        .map((word) => word
+        .split('')
+        .map((symbol) => `\\${symbol}`)
+        .join(''))
+        .join('|');
+    //\[ \]|\[\]
+    return new RegExp(`^\\s*([${characterSymbolsRegex}]|(${wordSymbolsRegex}))\\s?(.*)`);
+};
+exports.taskSymbols = {
+    box: ['-', '❍', '❑', '■', '⬜', '□', '☐', '▪', '▫', '–', '—', '≡', '→', '›', '[]', '[ ]'],
+    done: ['✔', '✓', '☑', '+', '[x]', '[X]', '[+]'],
+};
+exports.taskRegex = {
+    box: makeTaskRegex(exports.taskSymbols.box),
+    done: makeTaskRegex(exports.taskSymbols.done),
+};
+const isTask = (line) => {
+    const boxTask = getBoxTask(line);
+    const indent = (0, jsUtils_1.countLeadingWhitespaces)(line);
+    if (boxTask !== null)
+        return { done: false, text: boxTask, indent: indent };
+    const doneTask = getDoneTask(line);
+    if (doneTask !== null)
+        return { done: true, text: doneTask, indent: indent };
+    return null;
+};
+exports.isTask = isTask;
+const getDoneTask = (text) => {
+    const doneMatch = text.match(exports.taskRegex.done);
+    if (!doneMatch)
+        return null;
+    return doneMatch[3];
+};
+const getBoxTask = (text) => {
+    const boxMatch = text.match(exports.taskRegex.box);
+    if (!boxMatch)
+        return null;
+    return boxMatch[3];
+};
+const taskToMarkdown = ({ done, text, indent }) => {
+    const md = `- [${done ? 'x' : ' '}] ${text}`;
+    return (0, jsUtils_1.addLeadingWhitespace)(md, indent);
+};
+exports.taskToMarkdown = taskToMarkdown;
 
 
 /***/ }),
