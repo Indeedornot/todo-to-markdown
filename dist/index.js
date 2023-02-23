@@ -208,16 +208,19 @@ const segment = {
     start: '<!-- start: readme-segment -->',
     end: '<!-- end: readme-segment -->',
 };
-const segmentRegex = new RegExp(`${segment.start}(.*)${segment.end}`, 's');
+const segmentRegex = new RegExp(`(?<=${segment.start})[\\s\\S]*?(?=${segment.end})`); //'g' to find all matches
 const getSegment = (readme) => {
     const matches = readme.match(segmentRegex);
-    if (!matches || matches.length < 2)
+    if (!matches)
         return null;
-    return (0, jsUtils_1.trimEmptyLines)(matches[1]);
+    return (0, jsUtils_1.trimEmptyLines)(matches[0]);
 };
 exports.getSegment = getSegment;
 const formatHeader = (header) => {
-    return `\n- ${header}\n`;
+    const indentCount = (0, jsUtils_1.countLeadingWhitespaces)(header);
+    const indent = header.slice(0, indentCount);
+    const text = header.slice(indentCount);
+    return `\n${indent}- ${text}\n`;
 };
 /**
  * Creates a segment from todo
@@ -245,7 +248,7 @@ const formatLines = (lines) => {
     return formattedLines;
 };
 const wrapSegment = (content) => {
-    return `${segment.start}\n\n${content}\n\n${segment.end}`;
+    return `\n\n${content}\n\n`;
 };
 const updateSegment = (readme, segment) => {
     return readme.replace(segmentRegex, wrapSegment(segment));
