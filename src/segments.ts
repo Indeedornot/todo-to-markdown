@@ -14,7 +14,10 @@ export const getSegment = (readme: string): string | null => {
 };
 
 const formatHeader = (header: string) => {
-	return `\n- ${header}\n`;
+	const indentCount = countLeadingWhitespaces(header);
+	const indent = header.slice(0, indentCount);
+	const text = header.slice(indentCount);
+	return `\n${indent}- ${text}\n`;
 };
 
 /**
