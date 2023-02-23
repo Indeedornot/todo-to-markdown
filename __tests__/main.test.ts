@@ -148,4 +148,86 @@ Some Done header:
 			expect(areEqual).toBe(true);
 		});
 	});
+
+	describe('Multiple Segments', () => {
+		test('getSegment', () => {
+			const readme = `
+This is some sample readme file for testing purposes.
+
+Hi, I am a sample readme file. I am used for testing purposes.
+
+<!-- start: readme-segment -->
+first segment
+<!-- end: readme-segment -->
+
+Hi!
+
+<!-- start: readme-segment -->
+second segment
+<!-- end: readme-segment -->
+
+Hi!
+`;
+
+			const segment = getSegment(readme);
+			if (segment === null) throw new Error('No segment found');
+
+			const expected = `first segment`;
+
+			const areEqual = expected === segment;
+			console.log(areEqual);
+			expect(areEqual).toBe(true);
+		});
+
+		test('updateSegment', () => {
+			const readme = `
+This is some sample readme file for testing purposes.
+
+Hi, I am a sample readme file. I am used for testing purposes.
+
+<!-- start: readme-segment -->
+first segment
+<!-- end: readme-segment -->
+
+Hi!
+
+<!-- start: readme-segment -->
+second segment
+<!-- end: readme-segment -->
+
+Hi!
+`;
+
+			const segment = getSegment(readme);
+			if (segment === null) throw new Error('No segment found');
+
+			const newSegment = createSegment(`new segment`);
+
+			const newReadme = updateSegment(readme, newSegment);
+
+			const expected = `
+This is some sample readme file for testing purposes.
+
+Hi, I am a sample readme file. I am used for testing purposes.
+
+<!-- start: readme-segment -->
+
+- new segment
+
+<!-- end: readme-segment -->
+
+Hi!
+
+<!-- start: readme-segment -->
+second segment
+<!-- end: readme-segment -->
+
+Hi!
+`;
+
+			const areEqual = expected === newReadme;
+			console.log(areEqual);
+			expect(areEqual).toBe(true);
+		});
+	});
 });

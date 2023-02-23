@@ -50,7 +50,7 @@ const formatLines = (lines: string[]) => {
 };
 
 const wrapSegment = (content: string) => {
-	return `${segment.start}\n\n${content}\n\n${segment.end}`;
+	return `\n\n${content}\n\n`;
 };
 
 export const updateSegment = (readme: string, segment: string) => {
