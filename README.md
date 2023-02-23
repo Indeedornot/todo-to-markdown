@@ -1,61 +1,66 @@
-## Code in Main
+<div align="center" style="padding-bottom: 20px">
+  <img src="assets/logo.png" style="width: 40%; height: 50%" />
+  
+  [![build-test](https://github.com/Indeedornot/todo-to-markdown/actions/workflows/test.yml/badge.svg)](https://github.com/Indeedornot/todo-to-markdown/actions/workflows/test.yml)
+  [![Check dist/](https://github.com/Indeedornot/todo-to-markdown/actions/workflows/check-dist.yml/badge.svg)](https://github.com/Indeedornot/todo-to-markdown/actions/workflows/check-dist.yml)
+  [![CodeQL](https://github.com/Indeedornot/todo-to-markdown/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Indeedornot/todo-to-markdown/actions/workflows/codeql-analysis.yml)
+  [![wakatime](https://wakatime.com/badge/user/ef2a734e-dc42-48cf-b3f4-6c60b675d517/project/d3d00164-ecd4-441b-a0e9-c3258c91eff3.svg)](https://wakatime.com/badge/user/ef2a734e-dc42-48cf-b3f4-6c60b675d517/project/d3d00164-ecd4-441b-a0e9-c3258c91eff3)
 
-> First, you'll need to have a reasonably modern version of `node` handy. This won't work with versions older than 9, for instance.
+</div>
 
-Install the dependencies
+If you use [Todo+](https://github.com/fabiospampinato/vscode-todo-plus) for tracking your TODOs - You can use this action to automatically add them to a roadmap in your README in form of a markdown list.
 
-```bash
-$ npm install
-```
+## Sample
 
-Build the typescript and package it for distribution
+| Todo                      | Markdown                     |
+| ------------------------- | ---------------------------- |
+| ![image](assets/todo.png) | ![image](assets/segment.png) |
 
-```bash
-$ npm run build && npm run package
-```
+## Roadmap
 
-Run the tests :heavy_check_mark:
+<!-- start: readme-segment -->
+<!-- end: readme-segment -->
 
-```bash
-$ npm test
+## Usage
 
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
+1. Add the following segment to your README file where you want your todo to appear:
 
-...
-```
+   ```text
+   <!-- start: readme-segment -->
+   <!-- end: readme-segment -->
+   ```
 
-## Publish to a distribution branch
+2. Click **Action** tab and choose **Set up a workflow yourself**.
+3. Copy the following code into the opened file
 
-Actions are run from GitHub repos so we will checkin the packed dist folder.
+   ```yaml
+   name: Todo+ Roadmap
 
-Then run [ncc](https://github.com/zeit/ncc) and push the results:
+   on:
+     push:
+       paths:
+         - 'TODO'
+     pull_request:
+       paths:
+         - 'TODO'
+     # Allow manual trigger
+     workflow_dispatch:
 
-```bash
-$ npm run package
-$ git add dist
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
+   permissions:
+     contents: write
 
-Note: We recommend using the `--license` option for ncc, which will create a license file for all of the production node modules used in your project.
+   jobs:
+     update:
+       name: Update Todo in Readme
+       runs-on: ubuntu-latest
+       steps:
+         # Use indeedornot/todo-to-markdown@<latest-release-tag> for latest stable release
+         - uses: indeedornot/todo-to-markdown@main
+           with:
+             # Automatic github token
+             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+             # Branch - older GitHub repositories have "master" as default branch, uncomment if that's the case
+             #BRANCH: "master"
+   ```
 
-Your action is now published! :rocket:
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Validate
-
-You can now validate the action by referencing `./` in a workflow in your repo (see [test.yml](.github/workflows/test.yml))
-
-```yaml
-uses: ./
-with:
-  milliseconds: 1000
-```
-
-## Usage:
-
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
+- Now every time you update your TODO file, your README will be updated with the latest todos.
