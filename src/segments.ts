@@ -5,12 +5,13 @@ const segment = {
 	start: '<!-- start: readme-segment -->',
 	end: '<!-- end: readme-segment -->',
 };
-const segmentRegex = new RegExp(`${segment.start}(.*)${segment.end}`, 's');
+
+const segmentRegex = new RegExp(`(?<=${segment.start})[\\s\\S]*?(?=${segment.end})`, 'g');
 
 export const getSegment = (readme: string): string | null => {
 	const matches = readme.match(segmentRegex);
-	if (!matches || matches.length < 2) return null;
-	return trimEmptyLines(matches[1]);
+	if (!matches) return null;
+	return trimEmptyLines(matches[0]);
 };
 
 const formatHeader = (header: string) => {
