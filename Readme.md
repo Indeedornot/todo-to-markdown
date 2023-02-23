@@ -6,12 +6,12 @@ This is a sample file used for testing.
 
 <!-- start: readme-segment -->
 
-### Major:
+- Major:
 
-- [ ] Make run on push of TODO
+    - [ ] Make run on push of TODO
 
-### Minor:
+- Minor:
 
-- [ ] Add better formatting
+    - [ ] Add better formatting
 
 <!-- end: readme-segment -->
