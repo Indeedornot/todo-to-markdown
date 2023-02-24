@@ -8,11 +8,13 @@ name: Check dist/
 #https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#example-using-a-public-action
 on:
   push:
-    paths:
-      - 'TODO'
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
   pull_request:
-    paths:
-      - 'TODO'
+    paths-ignore:
+      - '**.md'
   workflow_dispatch:
 
 jobs:
