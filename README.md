@@ -19,6 +19,16 @@ If you use [Todo+](https://github.com/fabiospampinato/vscode-todo-plus) for trac
 ## Roadmap
 
 <!-- start: readme-segment -->
+
+- Formatting:
+
+    - [ ] Format '@done(Date)' in done tasks
+
+- Tasks:
+
+    - [ ] Handle due tasks
+    - [ ] Handle abandoned tasks
+
 <!-- end: readme-segment -->
 
 ## Usage
